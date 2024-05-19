@@ -25,18 +25,21 @@ class wall:
         self.centerY: int = int(get_window_size()[1] / 2)
 
 Point = namedtuple("Point", "X Y")
+ColorTuple = namedtuple("Color", "R G B")
 def main():
     sizeX = 850
     sizeY = 650
-    size = (sizeX, sizeY)
-    win = set_mode(size)
-    horizon = Point(sizeX / 2, sizeY / 2 + 100)
+    win = set_mode((sizeX, sizeY))
+    horizonX = sizeX / 2
+    horizonY = sizeY / 2 + 100
     rot = 0
+    defaultColor = ColorTuple(255, 255, 255)
     walls = (
-        [(1, 1, 1), (1, 0, 1), (255, 255, 255)],
+        [(1, 1, 1), (1, 0, 1), defaultColor],
     )
 
     gridSize = 30
+    xOffset = 0
     yOffset = 5
     while True:
         win.fill((0, 0, 0))
@@ -53,14 +56,26 @@ def main():
             sys.exit()
         if k[K_UP]:
             yOffset = (yOffset +  0.1) % gridSize
-        
-        line(win, (255, 255, 255), (0, horizon.Y), (sizeX, horizon[1]))
-        
-        for i in range(sizeX // gridSize * -1, sizeX // gridSize):
-            line(win, (255, 255, 255), (horizon[0], horizon[1]), (i * 100,  sizeY))
+        if k[K_DOWN]:
+            yOffset = (yOffset - 0.1) % gridSize
+        # if k[K_LEFT]:
+        if k[K_d]:
+            xOffset = (xOffset -  0.1) % gridSize
+        if k[K_a]:
+            xOffset = (xOffset + 0.1)   % gridSize
 
-        for i in range(int(horizon[1]) // gridSize, sizeY):
-            line(win, (255, 255, 255), (0, i * gridSize + yOffset), (sizeX, i * gridSize + yOffset))
+
+
+        line(win, defaultColor, (0, horizonY), (sizeX, horizonY))
+
+        xDrift = sizeX
+        for i in range(-xDrift, sizeX + xDrift+1, gridSize):
+            _xEndPosition = i + xOffset
+            # print(_xEndPosition)
+            line(win, defaultColor, (horizonX, horizonY), (_xEndPosition, sizeY))
+
+        for i in range(int(horizonY) // gridSize, sizeY+1):
+            line(win, defaultColor, (0, i * gridSize + yOffset), (sizeX, i * gridSize + yOffset))
 
         flip()
 
