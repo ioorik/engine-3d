@@ -1,0 +1,56 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+interface IShape {
+    +void move(dx, dy): Move the shape about x/y axes
+}
+
+class Square {
+    -- left bottom vertex --
+    +Point p0
+
+    +double alpha: rotation to x axis
+}
+
+class Circle {
+    -- center vertex --
+    +Point p0
+}
+class Plane {
+    +IShape[] lShapes
+    +void draw()
+    +void add(IShape shape)
+}
+
+class Player {
+    -- view coordinates --
+    -Point botLeft
+    -Point topRight
+    +void run()
+    -void _addSquare(Point)
+    -void _zoomView(double)
+    -void _moveView(double)
+}
+
+class Point {
+    +double x
+    +double y
+}
+
+
+Player *-- "1" Plane
+Player *-- "0..*" Square
+Player *-- "0..*" Circle
+Plane o-- "0..*" IShape
+Square --|> IShape
+Circle --|> IShape
+IShape --> Point
+
+'
+'enum TimeUnit {
+'DAYS
+'HOURS
+'MINUTES
+'}
+
+@enduml
