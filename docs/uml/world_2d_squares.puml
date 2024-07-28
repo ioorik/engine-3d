@@ -2,9 +2,15 @@
 'https://plantuml.com/class-diagram
 
 interface IShape {
-    +void move(dx, dy): Move the shape about x/y axes
+    +Point position
+    +void move(Point: dp): Move the shape delta distance
+    +void draw(TBD)
 }
 
+interface IWorld {
+    +IShape[] lShapes
+    +void add(IShape: shape)
+}
 class Square {
     -- left bottom vertex --
     +Point p0
@@ -16,10 +22,9 @@ class Circle {
     -- center vertex --
     +Point p0
 }
-class Plane {
-    +IShape[] lShapes
+class Window {
+    +IWorld world
     +void draw()
-    +void add(IShape shape)
 }
 
 class Player {
@@ -37,14 +42,16 @@ class Point {
     +double y
 }
 
-
-Player *-- "1" Plane
+Player *-- "1" Window
 Player *-- "0..*" Square
 Player *-- "0..*" Circle
-Plane o-- "0..*" IShape
-Square --|> IShape
-Circle --|> IShape
+Window o-- "0..*" IWorld
+IWorld o-- "0..*" IShape
+World ..|> IWorld
+Square ..|> IShape
+Circle ..|> IShape
 IShape --> Point
+IWorld --> Point
 
 '
 'enum TimeUnit {
